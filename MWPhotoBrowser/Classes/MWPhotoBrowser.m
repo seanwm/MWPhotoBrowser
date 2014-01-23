@@ -228,7 +228,9 @@
 - (void)viewDidLoad {
 	
 	// View
-	self.view.backgroundColor = [UIColor blackColor];
+	//self.view.backgroundColor = [UIColor blackColor];
+#pragma mark KA Change
+    self.view.backgroundColor = [UIColor whiteColor];
     self.view.clipsToBounds = YES;
 	
 	// Setup paging scrolling view
@@ -239,7 +241,7 @@
 	_pagingScrollView.delegate = self;
 	_pagingScrollView.showsHorizontalScrollIndicator = NO;
 	_pagingScrollView.showsVerticalScrollIndicator = NO;
-	_pagingScrollView.backgroundColor = [UIColor blackColor];
+	_pagingScrollView.backgroundColor = [UIColor whiteColor];
     _pagingScrollView.contentSize = [self contentSizeForPagingScrollView];
 	[self.view addSubview:_pagingScrollView];
 	
@@ -485,6 +487,7 @@
         [navBar setBackgroundImage:nil forBarMetrics:UIBarMetricsDefault];
         [navBar setBackgroundImage:nil forBarMetrics:UIBarMetricsLandscapePhone];
     }
+    navBar.titleTextAttributes = @{UITextAttributeTextColor:[UIColor lightGrayColor]};
 }
 
 - (void)storePreviousNavBarAppearance {
