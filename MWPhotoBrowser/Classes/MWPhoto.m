@@ -46,6 +46,11 @@
 	return [[MWPhoto alloc] initWithURL:url];
 }
 
++ (MWPhoto *)photoWithURL:(NSURL *)url andAuthHeader:(NSString *)authHeader{
+	return [[MWPhoto alloc] initWithURL:url andAuthHeader:authHeader];
+}
+
+
 #pragma mark NSObject
 
 - (id)initWithImage:(UIImage *)image {
@@ -69,6 +74,15 @@
 	}
 	return self;
 }
+
+- (id)initWithURL:(NSURL *)url andAuthHeader:(NSString *)authHeader{
+	if ((self = [super init])) {
+		_photoURL = [url copy];
+        _authHeader = [authHeader copy];
+	}
+	return self;
+}
+
 
 - (void)dealloc {
 }
@@ -150,6 +164,14 @@
                     // Load async from web (using SDWebImage)
                     @try {
                         SDWebImageManager *manager = [SDWebImageManager sharedManager];
+
+                        if (_authHeader!=nil)
+                        {
+                            NSLog(@"Setting auth header to: %@", _authHeader);
+                            [manager.imageDownloader setValue:_authHeader forHTTPHeaderField:@"Authorization"];
+                        }
+                        [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
+
                         [manager downloadWithURL:_photoURL
                                          options:0
                                         progress:^(NSUInteger receivedSize, long long expectedSize) {
@@ -164,10 +186,12 @@
                                                MWLog(@"SDWebImage failed to download image: %@", error);
                                            }
                                            self.underlyingImage = image;
+                                           [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
                                            [self decompressImageAndFinishLoading];
                                        }];
                     } @catch (NSException *e) {
                         MWLog(@"Photo from web: %@", e);
+                        [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
                         [self decompressImageAndFinishLoading];
                     }
                     
